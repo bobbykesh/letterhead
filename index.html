@@ -3,126 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Letterhead Builder</title>
-    <link rel="stylesheet" href="src/style.css">
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Professional Letterhead Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Import FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Import html2pdf Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
     <div class="app-container">
-        <!-- LEFT PANEL: EDITOR -->
-        <div class="editor-panel">
-            <div class="editor-header">
-                <h1><i class="fa-solid fa-pen-nib"></i> Letterhead Builder</h1>
-                <p>Create professional designs in seconds.</p>
-            </div>
-
-            <div class="form-group">
-                <label>Select Template Style</label>
-                <div class="theme-buttons">
-                    <button class="btn-theme active" data-theme="theme-modern">Modern</button>
-                    <button class="btn-theme" data-theme="theme-classic">Classic</button>
-                    <button class="btn-theme" data-theme="theme-bold">Bold Side</button>
-                </div>
-            </div>
-
-            <div class="form-group">
+        <!-- LEFT SIDE: CONTROLS -->
+        <aside class="controls">
+            <h2><i class="fa-solid fa-pen-nib"></i> Letterhead Editor</h2>
+            
+            <div class="control-group">
+                <h3>Style & Design</h3>
+                <label>Template Style</label>
+                <select id="styleSelector">
+                    <option value="modern">Modern (Sidebar)</option>
+                    <option value="classic">Classic (Centered)</option>
+                    <option value="minimal">Minimal (Clean)</option>
+                </select>
+                
                 <label>Accent Color</label>
-                <div class="color-picker-wrapper">
-                    <input type="color" id="input-color" value="#2563eb">
-                    <span id="color-value">#2563eb</span>
-                </div>
+                <input type="color" id="colorPicker" value="#2c3e50">
             </div>
 
-            <div class="form-section">
-                <h3>Personal Details</h3>
-                <div class="input-grid">
-                    <input type="text" id="input-name" placeholder="Full Name" value="Alex Morgan">
-                    <input type="text" id="input-job" placeholder="Job Title" value="Senior Consultant">
-                </div>
+            <div class="control-group">
+                <h3>Company Info</h3>
+                <input type="file" id="logoInput" accept="image/*">
+                <input type="text" id="companyName" placeholder="Company Name" value="Acme Corp">
+                <input type="text" id="senderName" placeholder="Your Name" value="John Doe">
+                <input type="text" id="senderTitle" placeholder="Job Title" value="Chief Executive Officer">
             </div>
 
-            <div class="form-section">
-                <h3>Contact Info</h3>
-                <div class="input-grid">
-                    <input type="text" id="input-email" placeholder="Email Address" value="alex.morgan@example.com">
-                    <input type="text" id="input-phone" placeholder="Phone Number" value="+1 (555) 123-4567">
-                    <input type="text" id="input-web" placeholder="Website" value="www.alexmorgan.com">
-                    <input type="text" id="input-address" placeholder="Address" value="123 Business Rd, Tech City, TC 90210">
-                </div>
+            <div class="control-group">
+                <h3>Contact Details</h3>
+                <input type="text" id="phone" placeholder="Phone Number" value="+1 (555) 000-0000">
+                <input type="text" id="email" placeholder="Email Address" value="contact@acmecorp.com">
+                <input type="text" id="website" placeholder="Website" value="www.acmecorp.com">
+                <input type="text" id="address" placeholder="Street Address" value="123 Business Rd, Tech City">
             </div>
 
-            <div class="form-section">
-                <h3>Company Logo</h3>
-                <input type="file" id="input-logo" accept="image/*">
+            <div class="control-group">
+                <h3>Content</h3>
+                <input type="date" id="date" value="2023-10-27">
+                <textarea id="letterBody" rows="10" placeholder="Type your letter here...">Dear Sir/Madam,
+
+We are pleased to submit this proposal for your review. We believe our solution aligns perfectly with your goals.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
+Sincerely,</textarea>
             </div>
 
-            <div class="form-section">
-                <h3>Letter Content</h3>
-                <textarea id="input-body" rows="12">Dear [Recipient Name],
+            <button id="downloadBtn" class="btn-primary"><i class="fa-solid fa-download"></i> Download PDF</button>
+        </aside>
 
-I am writing to formally propose our services for your upcoming project. With over 10 years of experience in the industry, we have developed a reputation for excellence and innovation.
-
-Our team is dedicated to delivering high-quality results that meet your specific needs. We understand the unique challenges of your sector and are confident that our tailored approach will drive significant value for your organization.
-
-Please find attached the detailed proposal outlining our strategy, timeline, and budget. We look forward to the possibility of working together.
-
-Sincerely,
-
-Alex Morgan</textarea>
-            </div>
-
-            <div class="actions">
-                <button id="btn-print" class="btn-primary"><i class="fa-solid fa-file-pdf"></i> Download / Print PDF</button>
-            </div>
-        </div>
-
-        <!-- RIGHT PANEL: PREVIEW -->
-        <div class="preview-panel">
-            <div id="letterhead-preview" class="a4-page theme-modern">
-                <!-- Background decorative elements (for Bold theme) -->
-                <div class="sidebar-bg"></div>
-                <div class="header-bg"></div>
-
-                <!-- Header Section -->
-                <header class="lh-header">
-                    <div class="logo-area">
-                        <img id="preview-logo" src="" alt="Logo" style="display: none;">
-                    </div>
-                    <div class="identity-area">
-                        <h1 id="preview-name">Alex Morgan</h1>
-                        <h2 id="preview-job">Senior Consultant</h2>
-                    </div>
-                    <div class="contact-area">
-                        <div class="contact-item" id="contact-email">
-                            <i class="fa-solid fa-envelope"></i> <span>alex.morgan@example.com</span>
+        <!-- RIGHT SIDE: PREVIEW -->
+        <main class="preview-area">
+            <div class="preview-wrapper">
+                <!-- The A4 Sheet -->
+                <div id="letterhead" class="a4-page modern">
+                    
+                    <!-- Header Section -->
+                    <header class="lh-header">
+                        <div class="logo-area">
+                            <img id="displayLogo" src="" alt="Logo" style="display:none;">
+                            <h1 id="displayCompany">Acme Corp</h1>
                         </div>
-                        <div class="contact-item" id="contact-phone">
-                            <i class="fa-solid fa-phone"></i> <span>+1 (555) 123-4567</span>
+                        <div class="sender-info">
+                            <h2 id="displaySender">John Doe</h2>
+                            <p id="displayTitle">Chief Executive Officer</p>
                         </div>
-                        <div class="contact-item" id="contact-web">
-                            <i class="fa-solid fa-globe"></i> <span>www.alexmorgan.com</span>
+                    </header>
+
+                    <!-- Content Section -->
+                    <div class="lh-body">
+                        <div class="lh-sidebar">
+                            <div class="contact-item"><i class="fa-solid fa-phone"></i> <span id="displayPhone">+1 (555) 000-0000</span></div>
+                            <div class="contact-item"><i class="fa-solid fa-envelope"></i> <span id="displayEmail">contact@acmecorp.com</span></div>
+                            <div class="contact-item"><i class="fa-solid fa-globe"></i> <span id="displayWebsite">www.acmecorp.com</span></div>
+                            <div class="contact-item"><i class="fa-solid fa-location-dot"></i> <span id="displayAddress">123 Business Rd, Tech City</span></div>
                         </div>
-                        <div class="contact-item" id="contact-address">
-                            <i class="fa-solid fa-location-dot"></i> <span>123 Business Rd, Tech City, TC 90210</span>
+                        
+                        <div class="lh-content">
+                            <p id="displayDate" class="lh-date">October 27, 2023</p>
+                            <div id="displayBody">
+                                Dear Sir/Madam,<br><br>
+                                We are pleased to submit this proposal for your review...
+                            </div>
                         </div>
                     </div>
-                </header>
 
-                <!-- Body Content -->
-                <main class="lh-body">
-                    <div id="preview-body-content"></div>
-                </main>
-
-                <!-- Footer Section -->
-                <footer class="lh-footer">
-                    <p>&copy; <span id="year-span"></span> <span id="footer-name">Alex Morgan</span>. All rights reserved.</p>
-                </footer>
+                    <!-- Footer Section -->
+                    <footer class="lh-footer">
+                        <div class="footer-line"></div>
+                        <p>Registered in Tech City | ID: 99887766</p>
+                    </footer>
+                </div>
             </div>
-        </div>
+        </main>
     </div>
 
-    <script src="src/main.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
