@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Letterhead Generator</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Import FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Import html2pdf Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
@@ -44,6 +42,21 @@
                 <input type="text" id="email" placeholder="Email Address" value="contact@acmecorp.com">
                 <input type="text" id="website" placeholder="Website" value="www.acmecorp.com">
                 <input type="text" id="address" placeholder="Street Address" value="123 Business Rd, Tech City">
+            </div>
+
+            <div class="control-group">
+                <h3>Signatures</h3>
+                <label>How many people need to sign?</label>
+                <select id="sigCountSelector">
+                    <option value="0">None</option>
+                    <option value="1" selected>1 Person</option>
+                    <option value="2">2 People</option>
+                    <option value="3">3 People</option>
+                    <option value="4">4 People</option>
+                    <option value="5">5 People</option>
+                </select>
+                <!-- Dynamic inputs will appear here via JS -->
+                <div id="signatureNameInputs"></div>
             </div>
 
             <div class="control-group">
@@ -94,14 +107,14 @@ Sincerely,</textarea>
                                 Dear Sir/Madam,<br><br>
                                 We are pleased to submit this proposal for your review...
                             </div>
+
+                            <!-- SIGNATURE AREA -->
+                            <div id="signatureGrid" class="signature-grid">
+                                <!-- Dynamic signatures appear here -->
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Footer Section -->
-                    <footer class="lh-footer">
-                        <div class="footer-line"></div>
-                        <p>©All Rights Reserved</p>
-                    </footer>
+                    <!-- Footer Removed as requested -->
                 </div>
             </div>
         </main>
