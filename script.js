@@ -1,157 +1,178 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // --- 1. DOM ELEMENTS ---
+
+    // --- DOM REFERENCES ---
     const inputs = {
-        styleSelector: document.getElementById('styleSelector'),
-        colorPicker: document.getElementById('colorPicker'),
-        logoInput: document.getElementById('logoInput'),
-        companyName: document.getElementById('companyName'),
-        senderName: document.getElementById('senderName'),
-        senderTitle: document.getElementById('senderTitle'),
-        phone: document.getElementById('phone'),
-        email: document.getElementById('email'),
-        website: document.getElementById('website'),
-        address: document.getElementById('address'),
-        date: document.getElementById('date'),
-        letterBody: document.getElementById('letterBody'),
-        // Signature specific
-        sigCountSelector: document.getElementById('sigCountSelector'),
-        signatureNameInputs: document.getElementById('signatureNameInputs')
+        company: document.getElementById('companyName'),
+        leftAddr: document.getElementById('leftAddress'),
+        centerInfo: document.getElementById('centerInfo'),
+        rightAddr: document.getElementById('rightAddress'),
+        date: document.getElementById('dateInput'),
+        recName: document.getElementById('recipientName'),
+        recComp: document.getElementById('recipientCompany'),
+        recAddr: document.getElementById('recipientAddress'),
+        subject: document.getElementById('subjectLine'),
+        body: document.getElementById('letterBody'),
+        sigCount: document.getElementById('sigCountSelector'),
+        dynamicSigContainer: document.getElementById('dynamicSigInputs')
     };
 
-    const displays = {
-        letterhead: document.getElementById('letterhead'),
-        logo: document.getElementById('displayLogo'),
-        company: document.getElementById('displayCompany'),
-        sender: document.getElementById('displaySender'),
-        title: document.getElementById('displayTitle'),
-        phone: document.getElementById('displayPhone'),
-        email: document.getElementById('displayEmail'),
-        website: document.getElementById('displayWebsite'),
-        address: document.getElementById('displayAddress'),
-        date: document.getElementById('displayDate'),
-        body: document.getElementById('displayBody'),
-        // Signature specific
-        signatureGrid: document.getElementById('signatureGrid')
+    const display = {
+        company: document.getElementById('dispCompany'),
+        companySmall: document.getElementById('dispCompanySmall'),
+        leftAddr: document.getElementById('dispLeftAddr'),
+        centerInfo: document.getElementById('dispCenterInfo'),
+        rightAddr: document.getElementById('dispRightAddr'),
+        date: document.getElementById('dispDate'),
+        recName: document.getElementById('dispRecName'),
+        recComp: document.getElementById('dispRecComp'),
+        recAddr: document.getElementById('dispRecAddr'),
+        subject: document.getElementById('dispSubject'),
+        body: document.getElementById('dispBody'),
+        sigGrid: document.getElementById('signatureGrid')
     };
 
-    const downloadBtn = document.getElementById('downloadBtn');
-
-    // --- 2. LIVE PREVIEW UPDATE FUNCTIONS ---
-
-    // Generic Text Updater
-    function updateText(inputId, displayElement) {
-        inputId.addEventListener('input', (e) => {
-            displayElement.innerText = e.target.value;
+    // --- 1. BASIC TEXT UPDATERS ---
+    
+    // Helper to map inputs to outputs (handling newlines for addresses)
+    function bindText(input, output, isHTML = false) {
+        input.addEventListener('input', () => {
+            if(isHTML) {
+                output.innerHTML = input.value.replace(/\n/g, '<br>');
+            } else {
+                output.innerText = input.value;
+            }
         });
+        // Trigger once on load
+        input.dispatchEvent(new Event('input'));
     }
 
-    // Initialize Standard Text Listeners
-    updateText(inputs.companyName, displays.company);
-    updateText(inputs.senderName, displays.sender);
-    updateText(inputs.senderTitle, displays.title);
-    updateText(inputs.phone, displays.phone);
-    updateText(inputs.email, displays.email);
-    updateText(inputs.website, displays.website);
-    updateText(inputs.address, displays.address);
-    updateText(inputs.letterBody, displays.body);
-
-    // Date Updater
-    inputs.date.addEventListener('change', (e) => {
-        if(!e.target.value) return;
-        const dateObj = new Date(e.target.value);
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        displays.date.innerText = dateObj.toLocaleDateString('en-US', options);
+    bindText(inputs.company, display.company);
+    
+    // Special binder for the "For: COMPANY" part
+    inputs.company.addEventListener('input', () => {
+        display.companySmall.innerText = inputs.company.value;
     });
 
-    // --- 3. STYLE & THEME LOGIC ---
-    inputs.colorPicker.addEventListener('input', (e) => {
-        document.documentElement.style.setProperty('--primary-color', e.target.value);
+    bindText(inputs.leftAddr, display.leftAddr, true);
+    bindText(inputs.centerInfo, display.centerInfo, true);
+    bindText(inputs.rightAddr, display.rightAddr, true);
+    
+    bindText(inputs.recName, display.recName);
+    bindText(inputs.recComp, display.recComp);
+    bindText(inputs.recAddr, display.recAddr);
+    bindText(inputs.subject, display.subject);
+    bindText(inputs.body, display.body);
+
+    // Date Logic (Default to today)
+    const today = new Date();
+    inputs.date.valueAsDate = today;
+    
+    function formatDate(dateString) {
+        if(!dateString) return "";
+        const d = new Date(dateString);
+        // Format: 19th February, 2026
+        const day = d.getDate();
+        const month = d.toLocaleString('default', { month: 'long' });
+        const year = d.getFullYear();
+        
+        let suffix = "th";
+        if (day === 1 || day === 21 || day === 31) suffix = "st";
+        else if (day === 2 || day === 22) suffix = "nd";
+        else if (day === 3 || day === 23) suffix = "rd";
+
+        return `${day}${suffix} ${month}, ${year}`;
+    }
+
+    inputs.date.addEventListener('change', () => {
+        display.date.innerText = formatDate(inputs.date.value);
     });
+    // Trigger date update immediately
+    display.date.innerText = formatDate(inputs.date.value);
 
-    inputs.styleSelector.addEventListener('change', (e) => {
-        const selectedStyle = e.target.value;
-        displays.letterhead.classList.remove('modern', 'classic', 'minimal');
-        displays.letterhead.classList.add(selectedStyle);
-    });
 
-    // --- 4. SIGNATURE LOGIC ---
-    function renderSignatures(count) {
-        // Clear previous inputs and preview
-        inputs.signatureNameInputs.innerHTML = '';
-        displays.signatureGrid.innerHTML = '';
+    // --- 2. DYNAMIC SIGNATURE LOGIC ---
 
-        for(let i = 1; i <= count; i++) {
-            // 1. Create Control Input
-            const inputField = document.createElement('input');
-            inputField.type = 'text';
-            inputField.placeholder = `Signatory Name ${i}`;
-            inputField.id = `sigInput${i}`;
-            inputField.value = `Signatory ${i}`; // Default text
-            inputs.signatureNameInputs.appendChild(inputField);
+    function generateSignatories(count) {
+        inputs.dynamicSigContainer.innerHTML = '';
+        display.sigGrid.innerHTML = '';
 
-            // 2. Create Preview Block
-            const sigBlock = document.createElement('div');
-            sigBlock.className = 'sig-block';
+        for (let i = 1; i <= count; i++) {
+            // 1. Create Inputs in Sidebar
+            const wrapper = document.createElement('div');
+            wrapper.style.borderLeft = "3px solid #000";
+            wrapper.style.paddingLeft = "10px";
+            wrapper.style.marginBottom = "10px";
+
+            const nameInput = document.createElement('input');
+            nameInput.placeholder = `Person ${i} Name`;
+            nameInput.value = (i === 1) ? "Mr. Kazeem Oderinde" : "Signatory Name";
             
+            const titleInput = document.createElement('input');
+            titleInput.placeholder = `Person ${i} Title`;
+            titleInput.value = (i === 1) ? "MD/CEO" : "Director";
+
+            wrapper.appendChild(nameInput);
+            wrapper.appendChild(titleInput);
+            inputs.dynamicSigContainer.appendChild(wrapper);
+
+            // 2. Create Preview Blocks
+            const sigBlock = document.createElement('div');
+            sigBlock.className = 'sig-item';
+
             const sigLine = document.createElement('div');
             sigLine.className = 'sig-line';
 
-            const sigName = document.createElement('div');
-            sigName.className = 'sig-name';
-            sigName.innerText = `Signatory ${i}`;
-            sigName.id = `sigPreview${i}`;
+            const sigNameDisplay = document.createElement('div');
+            sigNameDisplay.className = 'sig-name';
+
+            const sigTitleDisplay = document.createElement('div');
+            sigTitleDisplay.className = 'sig-title';
 
             sigBlock.appendChild(sigLine);
-            sigBlock.appendChild(sigName);
-            displays.signatureGrid.appendChild(sigBlock);
+            sigBlock.appendChild(sigNameDisplay);
+            sigBlock.appendChild(sigTitleDisplay);
+            display.sigGrid.appendChild(sigBlock);
 
-            // 3. Link Input to Preview immediately
-            inputField.addEventListener('input', (e) => {
-                sigName.innerText = e.target.value;
-            });
+            // 3. Bind Events
+            const updateSig = () => {
+                sigNameDisplay.innerText = nameInput.value;
+                sigTitleDisplay.innerText = titleInput.value;
+            };
+
+            nameInput.addEventListener('input', updateSig);
+            titleInput.addEventListener('input', updateSig);
+            
+            // Init
+            updateSig();
         }
     }
 
-    // Initialize with 1 signature
-    renderSignatures(1);
+    // Initialize with 2 people (based on image)
+    generateSignatories(2);
 
-    // Listen for count change
-    inputs.sigCountSelector.addEventListener('change', (e) => {
-        const count = parseInt(e.target.value);
-        renderSignatures(count);
+    inputs.sigCount.addEventListener('change', (e) => {
+        generateSignatories(parseInt(e.target.value));
     });
 
 
-    // --- 5. IMAGE HANDLING (LOGO) ---
-    inputs.logoInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                displays.logo.src = event.target.result;
-                displays.logo.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // --- 6. PDF DOWNLOAD LOGIC ---
-    downloadBtn.addEventListener('click', () => {
+    // --- 3. PDF DOWNLOAD ---
+    document.getElementById('downloadBtn').addEventListener('click', () => {
         const element = document.getElementById('letterhead');
+        const btn = document.getElementById('downloadBtn');
+        
+        btn.innerText = "Processing...";
         
         const opt = {
             margin:       0,
-            filename:     'letterhead.pdf',
+            filename:     'Official_Letter.pdf',
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
-        downloadBtn.innerText = "Generating...";
-        
         html2pdf().set(opt).from(element).save().then(() => {
-            downloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Download PDF';
+            btn.innerHTML = '<i class="fa-solid fa-download"></i> Download PDF';
         });
     });
+
 });
