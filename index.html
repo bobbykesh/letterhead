@@ -3,119 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Letterhead Generator</title>
+    <title>Business Letterhead Generator</title>
     <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- HTML2PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
     <div class="app-container">
-        <!-- LEFT SIDE: CONTROLS -->
+        <!-- CONTROLS -->
         <aside class="controls">
-            <h2><i class="fa-solid fa-pen-nib"></i> Letterhead Editor</h2>
+            <h2><i class="fa-solid fa-file-contract"></i> Letter Editor</h2>
             
             <div class="control-group">
-                <h3>Style & Design</h3>
-                <label>Template Style</label>
-                <select id="styleSelector">
-                    <option value="modern">Modern (Sidebar)</option>
-                    <option value="classic">Classic (Centered)</option>
-                    <option value="minimal">Minimal (Clean)</option>
-                </select>
+                <h3>Header Information</h3>
+                <label>Company Name (The Big Header)</label>
+                <input type="text" id="companyName" value="RAFBEK KAZ MULTI-BIZ GLOBAL VENTURES">
                 
-                <label>Accent Color</label>
-                <input type="color" id="colorPicker" value="#2c3e50">
+                <label>Left Address (Home/Office)</label>
+                <textarea id="leftAddress" rows="3">Home Address:
+No. 5 Okepanu Quarters,
+Ohunbe, Yewa North,
+Ogun State.</textarea>
+
+                <label>Center Info (Contact)</label>
+                <textarea id="centerInfo" rows="3">Tel: 09164643999
+Email: rafbekglobal@gmail.com</textarea>
+
+                <label>Right Address (Branch/Postal)</label>
+                <textarea id="rightAddress" rows="3">Office Address:
+Adpobeam Filling Station
+Moro Village, Ilaro,
+Yewa South, Ogun State.</textarea>
             </div>
 
             <div class="control-group">
-                <h3>Company Info</h3>
-                <input type="file" id="logoInput" accept="image/*">
-                <input type="text" id="companyName" placeholder="Company Name" value="Acme Corp">
-                <input type="text" id="senderName" placeholder="Your Name" value="John Doe">
-                <input type="text" id="senderTitle" placeholder="Job Title" value="Chief Executive Officer">
+                <h3>Recipient & Subject</h3>
+                <input type="date" id="dateInput">
+                <input type="text" id="recipientName" placeholder="Recipient Name/Title" value="The Manager">
+                <input type="text" id="recipientCompany" placeholder="Recipient Company" value="United Bank for Africa Plc">
+                <input type="text" id="recipientAddress" placeholder="Recipient Location" value="Ilaro.">
+                
+                <label>Subject Line (Bold & Underlined)</label>
+                <input type="text" id="subjectLine" value="APPLICATION FOR TEMPORARY OVERDRAFT FACILITY">
             </div>
 
             <div class="control-group">
-                <h3>Contact Details</h3>
-                <input type="text" id="phone" placeholder="Phone Number" value="+1 (555) 000-0000">
-                <input type="text" id="email" placeholder="Email Address" value="contact@acmecorp.com">
-                <input type="text" id="website" placeholder="Website" value="www.acmecorp.com">
-                <input type="text" id="address" placeholder="Street Address" value="123 Business Rd, Tech City">
+                <h3>Letter Content</h3>
+                <textarea id="letterBody" rows="8">We write to formally request for a temporary overdraft facility of N20,000,000.00 to enhance our working capital. This is to be repaid within 30 days of disbursement.
+
+We thank you in expectation of your favourable consideration.</textarea>
             </div>
 
             <div class="control-group">
-                <h3>Signatures</h3>
-                <label>How many people need to sign?</label>
+                <h3>Signatories</h3>
+                <label>Number of People Signing:</label>
                 <select id="sigCountSelector">
-                    <option value="0">None</option>
-                    <option value="1" selected>1 Person</option>
-                    <option value="2">2 People</option>
+                    <option value="1">1 Person</option>
+                    <option value="2" selected>2 People</option>
                     <option value="3">3 People</option>
                     <option value="4">4 People</option>
                     <option value="5">5 People</option>
                 </select>
-                <!-- Dynamic inputs will appear here via JS -->
-                <div id="signatureNameInputs"></div>
-            </div>
-
-            <div class="control-group">
-                <h3>Content</h3>
-                <input type="date" id="date" value="2023-10-27">
-                <textarea id="letterBody" rows="10" placeholder="Type your letter here...">Dear Sir/Madam,
-
-We are pleased to submit this proposal for your review. We believe our solution aligns perfectly with your goals.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-
-Sincerely,</textarea>
+                <!-- JS will inject name/title inputs here -->
+                <div id="dynamicSigInputs"></div>
             </div>
 
             <button id="downloadBtn" class="btn-primary"><i class="fa-solid fa-download"></i> Download PDF</button>
         </aside>
 
-        <!-- RIGHT SIDE: PREVIEW -->
+        <!-- PREVIEW -->
         <main class="preview-area">
             <div class="preview-wrapper">
-                <!-- The A4 Sheet -->
-                <div id="letterhead" class="a4-page modern">
+                <!-- A4 PAGE START -->
+                <div id="letterhead" class="a4-page">
                     
-                    <!-- Header Section -->
-                    <header class="lh-header">
-                        <div class="logo-area">
-                            <img id="displayLogo" src="" alt="Logo" style="display:none;">
-                            <h1 id="displayCompany">Acme Corp</h1>
+                    <!-- 1. HEADER (Matches Image Format) -->
+                    <header class="specific-header">
+                        <h1 id="dispCompany" class="main-heading">RAFBEK KAZ MULTI-BIZ GLOBAL VENTURES</h1>
+                        
+                        <div class="header-columns">
+                            <div class="h-col left" id="dispLeftAddr">
+                                Home Address:<br>No. 5 Okepanu Quarters,<br>Ohunbe, Yewa North,<br>Ogun State.
+                            </div>
+                            <div class="h-col center" id="dispCenterInfo">
+                                Tel: 09164643999<br>Email: rafbekglobal@gmail.com
+                            </div>
+                            <div class="h-col right" id="dispRightAddr">
+                                Office Address:<br>Adpobeam Filling Station<br>Moro Village, Ilaro,<br>Yewa South, Ogun State.
+                            </div>
                         </div>
-                        <div class="sender-info">
-                            <h2 id="displaySender">John Doe</h2>
-                            <p id="displayTitle">Chief Executive Officer</p>
-                        </div>
+                        <div class="header-line"></div>
                     </header>
 
-                    <!-- Content Section -->
-                    <div class="lh-body">
-                        <div class="lh-sidebar">
-                            <div class="contact-item"><i class="fa-solid fa-phone"></i> <span id="displayPhone">+1 (555) 000-0000</span></div>
-                            <div class="contact-item"><i class="fa-solid fa-envelope"></i> <span id="displayEmail">contact@acmecorp.com</span></div>
-                            <div class="contact-item"><i class="fa-solid fa-globe"></i> <span id="displayWebsite">www.acmecorp.com</span></div>
-                            <div class="contact-item"><i class="fa-solid fa-location-dot"></i> <span id="displayAddress">123 Business Rd, Tech City</span></div>
-                        </div>
-                        
-                        <div class="lh-content">
-                            <p id="displayDate" class="lh-date">October 27, 2023</p>
-                            <div id="displayBody">
-                                Dear Sir/Madam,<br><br>
-                                We are pleased to submit this proposal for your review...
+                    <!-- 2. BODY CONTENT -->
+                    <div class="letter-content">
+                        <!-- Date & Recipient -->
+                        <div class="meta-block">
+                            <p id="dispDate">19th February, 2026</p>
+                            <br>
+                            <div class="recipient-block">
+                                <p id="dispRecName">The Manager</p>
+                                <p id="dispRecComp">United Bank for Africa Plc</p>
+                                <p id="dispRecAddr">Ilaro.</p>
                             </div>
+                        </div>
 
-                            <!-- SIGNATURE AREA -->
-                            <div id="signatureGrid" class="signature-grid">
-                                <!-- Dynamic signatures appear here -->
-                            </div>
+                        <!-- Salutation -->
+                        <p class="salutation">Dear Sir,</p>
+
+                        <!-- Subject -->
+                        <div class="subject-block">
+                            <h3 id="dispSubject">APPLICATION FOR TEMPORARY OVERDRAFT FACILITY</h3>
                         </div>
+
+                        <!-- Main Text -->
+                        <div id="dispBody" class="text-body">
+                            We write to formally request for a temporary overdraft facility...
+                        </div>
+
+                        <!-- Closing -->
+                        <div class="closing-section">
+                            <p>Yours faithfully,</p>
+                            <p class="for-company">For: <span id="dispCompanySmall">RAFBEK KAZ MULTI-BIZ</span></p>
+                        </div>
+
+                        <!-- 3. SIGNATURE GRID -->
+                        <div id="signatureGrid" class="signature-grid">
+                            <!-- Dynamic Signatures appear here -->
+                        </div>
+
                     </div>
-                    <!-- Footer Removed as requested -->
                 </div>
+                <!-- A4 PAGE END -->
             </div>
         </main>
     </div>
