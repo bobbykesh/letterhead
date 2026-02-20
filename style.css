@@ -1,6 +1,6 @@
 /* --- RESET & BASICS --- */
 :root {
-    --primary-color: #2c3e50; /* Dynamic Variable */
+    --primary-color: #2c3e50;
     --text-color: #333;
     --bg-color: #f0f2f5;
     --paper-width: 210mm;
@@ -64,17 +64,18 @@ textarea { resize: vertical; }
 /* The A4 Paper */
 .a4-page {
     width: var(--paper-width);
-    min-height: var(--paper-height); /* Min-height allows it to grow if needed, though PDF works best with fixed */
+    min-height: var(--paper-height);
     background: white;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
     position: relative;
     padding: 0;
     color: var(--text-color);
+    padding-bottom: 40px; /* Add padding at bottom since footer is gone */
 }
 
 /* --- DYNAMIC TEMPLATE STYLES --- */
 
-/* 1. MODERN STYLE (Sidebar Layout) */
+/* 1. MODERN STYLE */
 .a4-page.modern { display: flex; flex-direction: column; }
 .a4-page.modern .lh-header {
     background: var(--primary-color);
@@ -94,9 +95,8 @@ textarea { resize: vertical; }
 .a4-page.modern .lh-content { width: 70%; padding: 0 40px; }
 .a4-page.modern .contact-item { margin-bottom: 15px; font-size: 12px; color: #555; display: flex; align-items: center; gap: 10px; }
 .a4-page.modern .contact-item i { color: var(--primary-color); }
-.a4-page.modern .lh-footer { text-align: center; font-size: 10px; color: #999; padding: 20px; margin-top: auto; }
 
-/* 2. CLASSIC STYLE (Centered Header) */
+/* 2. CLASSIC STYLE */
 .a4-page.classic { padding: 50px; text-align: center; }
 .a4-page.classic .lh-header { border-bottom: 2px solid var(--primary-color); padding-bottom: 20px; margin-bottom: 30px; }
 .a4-page.classic .lh-header h1 { color: var(--primary-color); font-size: 32px; font-family: 'Times New Roman', serif; }
@@ -111,11 +111,10 @@ textarea { resize: vertical; }
     border-bottom: 1px solid #eee;
     padding-bottom: 20px;
 }
-.a4-page.classic .contact-item i { display: none; } /* Hide icons for classic */
+.a4-page.classic .contact-item i { display: none; }
 .a4-page.classic .lh-content { font-family: 'Times New Roman', serif; font-size: 16px; line-height: 1.6; }
-.a4-page.classic .lh-footer { border-top: 1px solid #ccc; margin-top: 50px; padding-top: 10px; font-size: 12px; text-align: center; }
 
-/* 3. MINIMAL STYLE (Left Aligned, Clean) */
+/* 3. MINIMAL STYLE */
 .a4-page.minimal { padding: 60px; }
 .a4-page.minimal .lh-header { margin-bottom: 60px; }
 .a4-page.minimal .lh-header h1 { font-weight: 900; letter-spacing: -1px; font-size: 40px; color: #000; }
@@ -123,7 +122,6 @@ textarea { resize: vertical; }
 .a4-page.minimal .lh-body { display: flex; flex-direction: row-reverse; gap: 40px; }
 .a4-page.minimal .lh-sidebar { width: 25%; text-align: right; border-left: 4px solid var(--primary-color); padding-left: 20px; height: fit-content; }
 .a4-page.minimal .lh-content { width: 75%; }
-.a4-page.minimal .lh-footer { display: none; } /* No footer for minimal */
 
 /* Logo Sizing */
 .logo-area img { max-height: 60px; margin-right: 15px; }
@@ -131,3 +129,37 @@ textarea { resize: vertical; }
 
 /* Helper for multiline text */
 #displayBody { white-space: pre-wrap; line-height: 1.6; }
+
+/* --- SIGNATURE STYLES --- */
+.signature-grid {
+    margin-top: 60px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: flex-start;
+}
+
+.sig-block {
+    flex: 0 0 45%; /* Default to 2 per row (leaving space for gaps) */
+    min-width: 150px;
+}
+
+/* The Line */
+.sig-line {
+    width: 100%;
+    border-top: 2px solid #000; /* Solid Bold Line */
+    margin-bottom: 10px;
+}
+
+/* The Name */
+.sig-name {
+    font-weight: 800; /* Bold */
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #000;
+}
+
+/* Adjust classic style signature font */
+.a4-page.classic .sig-name {
+    font-family: 'Times New Roman', serif;
+}
