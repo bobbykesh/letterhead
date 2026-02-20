@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Letterhead Builder</title>
+    <link rel="stylesheet" href="src/style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- LEFT PANEL: EDITOR -->
+        <div class="editor-panel">
+            <div class="editor-header">
+                <h1><i class="fa-solid fa-pen-nib"></i> Letterhead Builder</h1>
+                <p>Create professional designs in seconds.</p>
+            </div>
+
+            <div class="form-group">
+                <label>Select Template Style</label>
+                <div class="theme-buttons">
+                    <button class="btn-theme active" data-theme="theme-modern">Modern</button>
+                    <button class="btn-theme" data-theme="theme-classic">Classic</button>
+                    <button class="btn-theme" data-theme="theme-bold">Bold Side</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Accent Color</label>
+                <div class="color-picker-wrapper">
+                    <input type="color" id="input-color" value="#2563eb">
+                    <span id="color-value">#2563eb</span>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Personal Details</h3>
+                <div class="input-grid">
+                    <input type="text" id="input-name" placeholder="Full Name" value="Alex Morgan">
+                    <input type="text" id="input-job" placeholder="Job Title" value="Senior Consultant">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Contact Info</h3>
+                <div class="input-grid">
+                    <input type="text" id="input-email" placeholder="Email Address" value="alex.morgan@example.com">
+                    <input type="text" id="input-phone" placeholder="Phone Number" value="+1 (555) 123-4567">
+                    <input type="text" id="input-web" placeholder="Website" value="www.alexmorgan.com">
+                    <input type="text" id="input-address" placeholder="Address" value="123 Business Rd, Tech City, TC 90210">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Company Logo</h3>
+                <input type="file" id="input-logo" accept="image/*">
+            </div>
+
+            <div class="form-section">
+                <h3>Letter Content</h3>
+                <textarea id="input-body" rows="12">Dear [Recipient Name],
+
+I am writing to formally propose our services for your upcoming project. With over 10 years of experience in the industry, we have developed a reputation for excellence and innovation.
+
+Our team is dedicated to delivering high-quality results that meet your specific needs. We understand the unique challenges of your sector and are confident that our tailored approach will drive significant value for your organization.
+
+Please find attached the detailed proposal outlining our strategy, timeline, and budget. We look forward to the possibility of working together.
+
+Sincerely,
+
+Alex Morgan</textarea>
+            </div>
+
+            <div class="actions">
+                <button id="btn-print" class="btn-primary"><i class="fa-solid fa-file-pdf"></i> Download / Print PDF</button>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: PREVIEW -->
+        <div class="preview-panel">
+            <div id="letterhead-preview" class="a4-page theme-modern">
+                <!-- Background decorative elements (for Bold theme) -->
+                <div class="sidebar-bg"></div>
+                <div class="header-bg"></div>
+
+                <!-- Header Section -->
+                <header class="lh-header">
+                    <div class="logo-area">
+                        <img id="preview-logo" src="" alt="Logo" style="display: none;">
+                    </div>
+                    <div class="identity-area">
+                        <h1 id="preview-name">Alex Morgan</h1>
+                        <h2 id="preview-job">Senior Consultant</h2>
+                    </div>
+                    <div class="contact-area">
+                        <div class="contact-item" id="contact-email">
+                            <i class="fa-solid fa-envelope"></i> <span>alex.morgan@example.com</span>
+                        </div>
+                        <div class="contact-item" id="contact-phone">
+                            <i class="fa-solid fa-phone"></i> <span>+1 (555) 123-4567</span>
+                        </div>
+                        <div class="contact-item" id="contact-web">
+                            <i class="fa-solid fa-globe"></i> <span>www.alexmorgan.com</span>
+                        </div>
+                        <div class="contact-item" id="contact-address">
+                            <i class="fa-solid fa-location-dot"></i> <span>123 Business Rd, Tech City, TC 90210</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Body Content -->
+                <main class="lh-body">
+                    <div id="preview-body-content"></div>
+                </main>
+
+                <!-- Footer Section -->
+                <footer class="lh-footer">
+                    <p>&copy; <span id="year-span"></span> <span id="footer-name">Alex Morgan</span>. All rights reserved.</p>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script src="src/main.js"></script>
+</body>
+</html>
